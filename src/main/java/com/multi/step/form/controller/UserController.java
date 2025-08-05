@@ -67,7 +67,10 @@ public class UserController {
 		
 		User user = customUserDetailsService.getUserDetails(username);
 
-		UserResponse userResponse = new UserResponse(user.getStudentId(),user.getName(),user.getUsername());
+		UserResponse userResponse = null;
+		if(user!=null) {
+			userResponse = new UserResponse(user.getStudentId(),user.getName(),user.getUsername());
+		}
 		
         response.put("user", userResponse);
         response.put("authenticated", true);

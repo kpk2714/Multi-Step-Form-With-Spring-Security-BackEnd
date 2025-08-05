@@ -40,6 +40,9 @@ public class WebSecurityConfiguration {
 	@Autowired
 	private DataSource dataSource;
 	
+	@Autowired
+	private OAuth2LoginSuccessHandler oauth2LoginSuccessHandler;
+	
 	@Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -62,6 +65,10 @@ public class WebSecurityConfiguration {
 									   .requestMatchers("/about").hasAuthority("ROLE_ADMIN")
 									   .anyRequest().authenticated()
 								  )
+			
+								  .oauth2Login(oauth2 -> oauth2
+										  .successHandler(oauth2LoginSuccessHandler)
+								   )
 			
 								  .formLogin(form -> form.disable())
 								  .logout(logout -> logout
