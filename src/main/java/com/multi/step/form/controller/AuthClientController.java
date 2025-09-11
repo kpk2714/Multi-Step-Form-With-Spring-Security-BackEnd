@@ -101,8 +101,8 @@ public class AuthClientController {
 	        }
 		}
 		else {
-			responseBody.put("isAuthenticated", true);
-            return ResponseEntity.ok(responseBody);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                			 .body(Map.of("message", "User not registered."));
 		}
 	}
 }
