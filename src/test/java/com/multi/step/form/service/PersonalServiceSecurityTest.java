@@ -38,22 +38,35 @@ public class PersonalServiceSecurityTest {
     }
     
     @Test
-    @DisplayName("savePersonal() should save and return Personal entity")
+    @DisplayName("savePersonal() -> should save and return Personal entity")
     void testSavePersonal() {
         // Arrange
         when(personalRepository.save(any(Personal.class))).thenReturn(personal);
 
         // Act
         Personal saved = personalService.savePersonal(personal);
-        System.out.println(saved);
 
         ArgumentCaptor<Personal> captor = ArgumentCaptor.forClass(Personal.class);
         verify(personalRepository, times(1)).save(captor.capture());
         Personal captured = captor.getValue();
-        System.out.println(captured);
 
         assertNotNull(saved);
         assertEquals("student123", saved.getUserId());
         assertEquals("student123", captured.getUserId());
+    }
+    
+    @Test
+    @DisplayName("getPersonalByUserId() -> should return Personal entity")
+    void testGetPersonalByUserId() {
+        // Arrange
+        when(personalRepository.findPersonalByUserId("student123")).thenReturn(personal);
+
+        // Act
+        Personal result = personalService.getPersonalByUserId("student123");
+
+        verify(personalRepository, times(1)).findPersonalByUserId("student123");
+        assertNotNull(result);
+        assertEquals("student123", result.getUserId());
+        assertEquals(1, result.getId());
     }
 }
