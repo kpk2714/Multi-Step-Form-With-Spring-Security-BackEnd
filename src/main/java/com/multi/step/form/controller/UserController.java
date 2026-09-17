@@ -108,6 +108,16 @@ public class UserController {
 		
 		Map<String, String> responseBody = new HashMap<>();
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+			responseBody.put("message", "Unauthorized User");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
+        }
+			
+		String username = authentication.getName();
+		userService.removeUserCache(username);
+		
 		System.out.println("Logout is called .");
 		// Invalidate session
 	    HttpSession session = request.getSession(false);
