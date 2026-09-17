@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -42,6 +43,9 @@ public class WebSecurityConfiguration {
 	
 	@Autowired
 	private OAuth2LoginSuccessHandler oauth2LoginSuccessHandler;
+	
+	@Autowired
+	private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 	
 	@Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
@@ -73,9 +77,7 @@ public class WebSecurityConfiguration {
 								  .formLogin(form -> form.disable())
 								  .logout(logout -> logout
 //										  .logoutUrl("/logout")
-//										  .logoutSuccessHandler((request, response, authentication) -> {
-//											  response.setStatus(HttpServletResponse.SC_OK);
-//										  })
+//										  .logoutSuccessHandler(customLogoutSuccessHandler)
 										  .invalidateHttpSession(true)
 										  .deleteCookies("JSESSIONID", "remember-me")
 										  .permitAll()

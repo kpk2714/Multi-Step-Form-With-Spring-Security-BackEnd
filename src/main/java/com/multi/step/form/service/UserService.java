@@ -3,6 +3,8 @@ package com.multi.step.form.service;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,9 @@ public class UserService {
 	private UserRepository userRepository;
 	
 	@PreAuthorize("hasRole('ROLE_STUDENT') and #username==authentication.name")
+	@Cacheable(value = "user", key = "#username")
 	public String getName(String username) {
+		System.out.println("DB is hit .");
 		return userRepository.findByUsername(username).getName();
 	}
 	
@@ -47,4 +51,10 @@ public class UserService {
 		
 		return studentId;
 	}
+	
+	@CacheEvict(value = "user", key = "#username")
+	public void removeUserCache(String username) {
+	    System.out.println("🧹 Cache cleared for user: " + username);
+	}
+
 }
